@@ -4,31 +4,36 @@ async function renderPost(postID) {
     try{
         const postURL = `https://jsonplaceholder.typicode.com/posts/${postID}`
         const postRawData = await fetch(postURL);
-        const postData = await postRawData.json();
+        const {title, body} = await postRawData.json();
         const postComments = await getPostComments(postID);
-
-        const post = document.createElement('div');
-        post.classList.add('post');
-        post.id = "post";
-
-        const postTitle = document.createElement('h1');
-        postTitle.classList.add('post__title');
-        postTitle.innerText = postData.title
-
-        const postText = document.createElement('p');
-        postText.classList.add('post__text');
-        postText.innerText = postData.body;
-
-        const postCommentsText = document.createElement('b');
-        postCommentsText.classList.add('post__comments-text');
-        postCommentsText.innerText = "Комментарии";
-
-        post.append(postTitle, postText, postCommentsText, postComments);
+        const post = createPostElement(title, body, postComments);
 
         document.body.append(post)
     } catch(error) {
         console.log(error);
     } 
+}
+
+function createPostElement(title, body, comments) {
+    const post = document.createElement('div');
+    post.classList.add('post');
+    post.id = "post";
+
+    const postTitle = document.createElement('h1');
+    postTitle.classList.add('post__title');
+    postTitle.innerText = title;
+
+    const postText = document.createElement('p');
+    postText.classList.add('post__text');
+    postText.innerText = body;
+
+    const postCommentsText = document.createElement('b');
+    postCommentsText.classList.add('post__comments-text');
+    postCommentsText.innerText = "Комментарии";
+
+    post.append(postTitle, postText, postCommentsText, comments);
+
+    return post
 }
 
 function createCommentElement(commentInfo) {
